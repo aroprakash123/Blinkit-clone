@@ -1,0 +1,418 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --green: #0c831f;
+  --border: #ddd;
+  --muted: #777;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  background: #f2f2f2;
+  overflow-x: hidden;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+/* Cart Panel Animation */
+.cart-panel {
+  position: fixed;
+  right: -100%;
+  top: 0;
+  width: 100%;
+  max-width: 400px;
+  height: 100vh;
+  background: white;
+  z-index: 1000;
+  transition: right 0.3s ease-in-out;
+  box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.cart-panel.active {
+  right: 0;
+}
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+  display: none;
+}
+
+.overlay.active {
+  display: block;
+}
+
+/* Product Card Styles */
+.productItems {
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  transition: transform 0.2s, box-shadow 0.2s;
+  cursor: pointer;
+}
+
+.productItems:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.productImg {
+  position: relative;
+  padding: 16px;
+  display: flex;
+  justify-content: center;
+  background: #f8f9fa;
+}
+
+.productImg p {
+  position: absolute;
+  bottom: 8px;
+  left: 8px;
+  background: rgba(0, 0, 0, 0.6);
+  color: white;
+  padding: 2px 8px;
+  border-radius: 20px;
+  font-size: 11px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin: 0;
+}
+
+.productContent {
+  padding: 12px;
+}
+
+.product-name {
+  font-size: 14px;
+  font-weight: 600;
+  margin: 0 0 4px 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.productContent p {
+  font-size: 12px;
+  color: #777;
+  margin: 0 0 8px 0;
+}
+
+.btn-price-outer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 8px;
+}
+
+.price {
+  font-size: 16px;
+  color: #0c831f;
+  font-weight: 700;
+}
+
+.add-btn {
+  background: #0c831f;
+  color: white;
+  border: none;
+  padding: 6px 16px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.add-btn:hover {
+  background: #0a6e1a;
+}
+
+.qty-pill {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #f0f0f0;
+  border-radius: 8px;
+  padding: 2px;
+}
+
+.pill-btn {
+  background: white;
+  border: none;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 18px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pill-qty {
+  font-weight: 600;
+  min-width: 24px;
+  text-align: center;
+}
+
+/* Cart Item Styles */
+.item-card {
+  display: flex;
+  gap: 12px;
+  padding: 12px;
+  border-bottom: 1px solid #eee;
+  transition: opacity 0.3s;
+}
+
+.item-card.cart-item-removing {
+  opacity: 0;
+}
+
+.thumb {
+  width: 48px;
+  height: 48px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+}
+
+.item-details {
+  flex: 1;
+}
+
+.item-name {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.item-weight {
+  font-size: 12px;
+  color: #777;
+}
+
+.item-price {
+  font-size: 14px;
+  font-weight: 600;
+  color: #0c831f;
+  margin-top: 4px;
+}
+
+.qty-control {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #f0f0f0;
+  border-radius: 8px;
+  padding: 4px;
+}
+
+.qty-btn {
+  background: white;
+  border: none;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.qty-num {
+  font-weight: 600;
+  min-width: 24px;
+  text-align: center;
+}
+
+/* Bill Card */
+.bill-card {
+  background: #f8f9fa;
+  border-radius: 12px;
+  padding: 16px;
+  margin: 12px;
+}
+
+.bill-title {
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+.bill-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+
+.muted {
+  color: #777;
+}
+
+.bill-total {
+  font-weight: 800;
+  font-size: 18px;
+  color: #0c831f;
+}
+
+/* Tip Card */
+.tip-card {
+  padding: 16px;
+  margin: 12px;
+  border: 1px solid #eee;
+  border-radius: 12px;
+}
+
+.tip-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 8px;
+}
+
+.tip-btn {
+  padding: 8px 16px;
+  border: 1px solid #ddd;
+  border-radius: 24px;
+  background: white;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.tip-btn.active,
+.tip-btn:hover {
+  background: #0c831f;
+  color: white;
+  border-color: #0c831f;
+}
+
+/* Donation Card */
+.donation-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  margin: 12px;
+  background: #fff8e7;
+  border-radius: 12px;
+}
+
+.don-thumb {
+  font-size: 32px;
+}
+
+.don-text {
+  flex: 1;
+  font-size: 12px;
+}
+
+.don-small {
+  font-size: 11px;
+  color: #666;
+}
+
+/* Bottom Bar */
+.bottom-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: white;
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+  padding: 12px 16px;
+  z-index: 100;
+}
+
+.bottom-inner {
+  max-width: 400px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.proceed-btn {
+  background: #0c831f;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .cart-panel {
+    max-width: 100%;
+  }
+  
+  .bottom-bar {
+    padding: 10px;
+  }
+}
+
+/* Loading Spinner */
+.loader {
+  width: 24px;
+  height: 24px;
+  border: 3px solid rgba(255, 255, 255, 0.4);
+  border-top: 3px solid #fff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  display: inline-block;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* Add to your existing index.css */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
