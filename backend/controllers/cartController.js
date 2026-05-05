@@ -37,7 +37,7 @@ const addToCart = async (req, res) => {
     );
 
     if (existingItem) {
-      existingItem.quantity += quantity;
+existingItem.quantity = (existingItem.quantity || 0) + Number(quantity);
       existingItem.price = product.price;
     } else {
       cart.items.push({
@@ -62,30 +62,32 @@ const addToCart = async (req, res) => {
 const updateCartItem = async (req, res) => {
   try {
     const { productId, quantity } = req.body;
+
     const cart = await Cart.findOne({ user: req.user._id });
-    
+
     if (!cart) {
       return res.status(404).json({ message: 'Cart not found' });
     }
 
-    const item = cart.items.find(
+    const itemIndex = cart.items.findIndex(
       item => item.product.toString() === productId
     );
 
-    if (item) {
-      if (quantity <= 0) {
-        cart.items = cart.items.filter(
-          item => item.product.toString() !== productId
-        );
-      } else {
-        item.quantity = quantity;
-      }
+    if (itemIndex === -1) {
+      return res.status(404).json({ message: 'Item not in cart' });
+    }
+
+    if (quantity <= 0) {
+      cart.items.splice(itemIndex, 1);
+    } else {
+      cart.items[itemIndex].quantity = Number(quantity);
     }
 
     cart.updatedAt = Date.now();
+
     await cart.save();
     await cart.populate('items.product');
-    
+
     res.json(cart);
   } catch (error) {
     res.status(500).json({ message: error.message });
