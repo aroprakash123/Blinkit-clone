@@ -15,7 +15,7 @@ const app = express();
 const corsOptions = {
   origin: [
     "http://localhost:5173",
-    "https://your-vercel-app.vercel.app"
+    "https://blinkit-ui-5w8y.onrender.com"
   ],
   credentials: true
 };
@@ -62,7 +62,7 @@ const connectDB = async () => {
 connectDB();
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
   console.log(`Server running on port ${PORT}`);
   console.log(`API available at http://localhost:${PORT}/api`);
 });

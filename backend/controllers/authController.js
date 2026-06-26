@@ -63,11 +63,13 @@ const registerUser = async (req, res) => {
     console.log('Stored password in DB:', user.password);
 
     res.status(201).json({
-      _id: user._id,
-      username: user.username,
-      email: user.email,
-      token: generateToken(user._id)
-    });
+  token: generateToken(user._id),
+  user: {
+    _id: user._id,
+    username: user.username,
+    email: user.email,
+  },
+});
     
   } catch (error) {
     console.error('Registration error details:', error);
@@ -80,56 +82,52 @@ const registerUser = async (req, res) => {
 const loginUser = async (req, res) => {
   try {
     const { username, password } = req.body;
-    
-    console.log('=== LOGIN DEBUG ===');
-    console.log('Username/Email:', username);
-    console.log('Password entered:', password);
-    console.log('Password length:', password.length);
-    
-    // Validate input
-    if (!username || !password) {
-      return res.status(400).json({ message: 'Please provide username/email and password' });
-    }
-    
-    // Find user by username or email
-    const user = await User.findOne({ 
-      $or: [{ email: username }, { username: username }] 
+
+    console.log("=== LOGIN DEBUG ===");
+    console.log("Username:", username);
+
+    const user = await User.findOne({
+      $or: [
+        { email: username.toLowerCase() },
+        { username: username }
+      ]
     });
-    
+
     if (!user) {
-      console.log('User not found:', username);
-      return res.status(401).json({ message: 'Invalid email/username or password' });
+      return res.status(401).json({
+        message: "Invalid username/email or password",
+      });
     }
-    
-    console.log('User found:', user.username);
-    console.log('Stored password hash:', user.password);
-    console.log('Stored hash length:', user.password.length);
-    
-    // Check password using bcrypt directly
-    const isMatch = await bcrypt.compare(password.trim(), user.password);
-    
-    console.log('Password match result:', isMatch);
-    
+
+    const isMatch = await bcrypt.compare(
+      password.trim(),
+      user.password
+    );
+
+    console.log("Password Match:", isMatch);
+
     if (!isMatch) {
-      // Try comparing without trim
-      const isMatchNoTrim = await bcrypt.compare(password, user.password);
-      console.log('Match without trim:', isMatchNoTrim);
-      return res.status(401).json({ message: 'Invalid email/username or password' });
+      return res.status(401).json({
+        message: "Invalid username/email or password",
+      });
     }
-    
-    res.json({
-      _id: user._id,
-      username: user.username,
-      email: user.email,
-      token: generateToken(user._id)
+
+    res.status(200).json({
+      token: generateToken(user._id),
+      user: {
+        _id: user._id,
+        username: user.username,
+        email: user.email,
+      },
     });
-    
   } catch (error) {
-    console.error('Login error:', error);
-    res.status(500).json({ message: error.message || 'Server error during login' });
+    console.error("LOGIN ERROR:", error);
+
+    res.status(500).json({
+      message: "Server Error",
+    });
   }
 };
-
 // @desc    Save user address
 // @route   POST /api/auth/address
 const saveAddress = async (req, res) => {

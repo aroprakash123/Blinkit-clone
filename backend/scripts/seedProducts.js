@@ -387,18 +387,46 @@ categories.forEach((category) => {
       const deliveryTimes = ["17 mins", "15 mins", "20 mins", "10 mins", "12 mins"];
       const deliveryTime = deliveryTimes[Math.floor(Math.random() * deliveryTimes.length)];
       
-      products.push({
-        name: `${item}${variant > 1 ? ` - Pack ${variant}` : ''}`,
-        price: price,
-        originalPrice: originalPrice,
-        quantity: quantity,
-        category: category.name,
-        image: getProductImage(item, category.name),
-        deliveryTime: deliveryTime,
-        rating: (Math.random() * (5 - 3.5) + 3.5).toFixed(1),
-        stock: Math.floor(Math.random() * 500) + 50,
-        inStock: Math.random() > 0.05
-      });
+     products.push({
+  name: `${item}${variant > 1 ? ` - Pack ${variant}` : ''}`,
+  price,
+  originalPrice,
+  quantity,
+  category: category.name,
+  image: getProductImage(item, category.name),
+
+  description: `${item} is a premium quality product sourced from trusted suppliers and carefully packed to ensure freshness, taste, and quality. Ideal for daily consumption and suitable for households looking for reliable grocery essentials. Enjoy great value, excellent quality, and convenient delivery right to your doorstep.`,
+
+  brand: "FreshMart",
+
+  highlights: [
+    "Premium Quality",
+    "Fresh & Hygienic",
+    "Best Value for Money",
+    "Fast Delivery"
+  ],
+
+  ingredients: "Made from high-quality ingredients selected for freshness and taste.",
+
+  nutritionalInfo:
+    "Contains essential nutrients required for a balanced diet. Refer to packaging for complete nutritional details.",
+
+  seller: "FreshMart Retail Pvt Ltd",
+
+  countryOfOrigin: "India",
+
+  shelfLife: "6 Months",
+
+  deliveryTime,
+
+  rating: Number(
+    (Math.random() * (5 - 3.5) + 3.5).toFixed(1)
+  ),
+
+  stock: Math.floor(Math.random() * 500) + 50,
+
+  inStock: Math.random() > 0.05
+});
     });
   });
 });
@@ -411,7 +439,7 @@ async function seedProducts() {
     console.log("🚀 Seeding Products...\n");
     await mongoose.connect(process.env.MONGO_URI);
     console.log("✅ MongoDB Connected\n");
-    await Product.deleteMany({});
+    // await Product.deleteMany({});
     console.log("🧹 Old products removed\n");
     
     // Insert in batches for better performance
