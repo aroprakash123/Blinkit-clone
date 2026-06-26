@@ -260,6 +260,49 @@ const ProductDetail = () => {
             >
               Buy Now
             </button>
+
+            {/* PRODUCT DETAILS */}
+
+<div className="mt-6 border-t pt-4 dark:border-gray-700">
+  <h3 className="text-lg font-bold text-gray-800 dark:text-white">
+    Product Description
+  </h3>
+
+  <p className="mt-2 text-gray-600 dark:text-gray-300 leading-relaxed">
+    {product.description ||
+      `Enjoy premium quality ${product.name}. Carefully selected and packed to ensure freshness and value. Perfect for daily use and delivered directly to your doorstep.`}
+  </p>
+</div>
+
+<div className="grid grid-cols-2 gap-3 mt-4">
+  <div>
+    <p className="text-sm text-gray-500">Category</p>
+    <p className="font-medium dark:text-white">
+      {product.category}
+    </p>
+  </div>
+
+  <div>
+    <p className="text-sm text-gray-500">Delivery</p>
+    <p className="font-medium dark:text-white">
+      {product.deliveryTime}
+    </p>
+  </div>
+
+  <div>
+    <p className="text-sm text-gray-500">Rating</p>
+    <p className="font-medium dark:text-white">
+      ⭐ {product.rating}
+    </p>
+  </div>
+
+  <div>
+    <p className="text-sm text-gray-500">Stock</p>
+    <p className="font-medium dark:text-white">
+      {product.stock}
+    </p>
+  </div>
+</div>
           </div>
         </div>
 
@@ -290,6 +333,8 @@ const ProductDetail = () => {
                   <span className="text-sm font-bold text-gray-900 dark:text-white">
                     ₹{item.price}
                   </span>
+
+                 
 
                   <button
                     onClick={(e) => {

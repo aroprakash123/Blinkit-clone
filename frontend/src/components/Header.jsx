@@ -15,11 +15,11 @@ const Header = ({ products = [] }) => {
 
   const searchRef = useRef();
 
-  // ✅ LOAD THEME
+  // Theme
   useEffect(() => {
-    const saved = localStorage.getItem("theme");
+    const savedTheme = localStorage.getItem("theme");
 
-    if (saved === "dark") {
+    if (savedTheme === "dark") {
       document.documentElement.classList.add("dark");
       setDarkMode(true);
     } else {
@@ -28,12 +28,10 @@ const Header = ({ products = [] }) => {
     }
   }, []);
 
-  // ✅ TOGGLE DARK MODE
   const toggleDarkMode = () => {
     const html = document.documentElement;
-    const isDark = html.classList.contains("dark");
 
-    if (isDark) {
+    if (html.classList.contains("dark")) {
       html.classList.remove("dark");
       localStorage.setItem("theme", "light");
       setDarkMode(false);
@@ -44,21 +42,20 @@ const Header = ({ products = [] }) => {
     }
   };
 
-  // 🔥 PLACEHOLDERS
+  // Search placeholders
   const placeholders = [
-    "Search ''milk''",
-    "Search ''bread''",
-    "Search ''eggs''",
-    "Search ''fruits''",
-    "Search ''snacks''",
+    "Search milk",
+    "Search bread",
+    "Search eggs",
+    "Search fruits",
+    "Search snacks",
   ];
 
-  const [index, setIndex] = useState(0);
+  const [placeholderIndex, setPlaceholderIndex] = useState(0);
 
-  // 🔥 SMOOTH LOOP (NO JUMP FEEL)
   useEffect(() => {
     const interval = setInterval(() => {
-      setIndex((prev) =>
+      setPlaceholderIndex((prev) =>
         prev === placeholders.length - 1 ? 0 : prev + 1
       );
     }, 2200);
@@ -66,16 +63,17 @@ const Header = ({ products = [] }) => {
     return () => clearInterval(interval);
   }, []);
 
-  // Cart count
+  // Cart Count
   const items = cart?.items || [];
+
   const itemCount = items.reduce(
     (sum, item) => sum + (item.quantity ?? 1),
     0
   );
 
-  // Filter search
+  // Search Products
   const filteredProducts = products.filter((product) =>
-    product.name.toLowerCase().includes(search.toLowerCase())
+    product.name?.toLowerCase().includes(search.toLowerCase())
   );
 
   const handleSelectProduct = (id) => {
@@ -89,76 +87,111 @@ const Header = ({ products = [] }) => {
     navigate("/login");
   };
 
-  // Close search on outside click
+  // Close Search Dropdown
   useEffect(() => {
-    const handleClickOutside = (e) => {
+    const handleOutsideClick = (e) => {
       if (!searchRef.current?.contains(e.target)) {
         setSearch("");
       }
     };
 
-    document.addEventListener("click", handleClickOutside);
+    document.addEventListener("click", handleOutsideClick);
+
     return () =>
-      document.removeEventListener("click", handleClickOutside);
+      document.removeEventListener("click", handleOutsideClick);
   }, []);
 
   return (
     <>
-      <header className="sticky top-0 z-50 backdrop-blur-md bg-white/80 dark:bg-gray-900/80 border-b border-gray-200 dark:border-gray-700">
-        
-        <div className="max-w-7xl mx-auto px-3 sm:px-4 py-3 flex flex-wrap md:flex-nowrap items-center justify-between gap-3">
+      <header className="sticky top-0 z-50 backdrop-blur-xl bg-white/90 dark:bg-gray-900/90 border-b border-gray-200 dark:border-gray-700 shadow-sm">
+
+        <div
+          className="
+          max-w-7xl
+          mx-auto
+          px-3
+          sm:px-4
+          py-3
+          flex
+          flex-wrap
+          md:flex-nowrap
+          items-center
+          gap-3
+          "
+        >
 
           {/* LOGO */}
           <div
-            className="flex items-center gap-2 sm:gap-3 cursor-pointer"
             onClick={() => navigate("/")}
+            className="cursor-pointer flex items-center gap-3 min-w-fit"
           >
-            <div className="font-bold text-lg sm:text-xl text-green-600">
-              Aroprakash's Ecommerce
-            </div>
+            <div>
+              <h1 className="text-lg sm:text-xl md:text-2xl font-extrabold text-green-600 whitespace-nowrap">
+                Blinkit Clone
+              </h1>
 
-            <div className="hidden md:block border-l pl-3 ml-2 dark:border-gray-600">
-              <h3 className="text-sm font-semibold dark:text-white">
-                ⚡ Delivery in 8 mins
-              </h3>
-              <p className="text-xs text-gray-500 dark:text-gray-400">
-                Bhubaneswar
-              </p>
+              <div className="hidden xl:block">
+                <p className="text-xs text-gray-500 dark:text-gray-400">
+                  ⚡ Delivery in 8 mins • Bhubaneswar
+                </p>
+              </div>
             </div>
           </div>
 
           {/* SEARCH */}
           <div
             ref={searchRef}
-            className="w-full md:flex-1 md:max-w-lg relative order-3 md:order-none"
+            className="
+            relative
+            w-full
+            md:flex-1
+            order-3
+            md:order-none
+            "
           >
+
             <input
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full pl-10 pr-4 py-2.5 rounded-xl border 
-              bg-white dark:bg-gray-800 text-gray-900 dark:text-white
-              focus:ring-2 focus:ring-green-500 outline-none"
+              className="
+              w-full
+              h-11
+              pl-11
+              pr-4
+              rounded-xl
+              border
+              border-gray-300
+              dark:border-gray-700
+              bg-white
+              dark:bg-gray-800
+              text-gray-900
+              dark:text-white
+              outline-none
+              focus:ring-2
+              focus:ring-green-500
+              "
             />
 
-            {/* ICON */}
-            <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+            <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
               🔍
             </div>
 
-            {/* 🔥 REAL SMOOTH ROLLING PLACEHOLDER */}
             {!search && (
-              <div className="absolute left-10 top-1/2 -translate-y-1/2 h-5 overflow-hidden pointer-events-none">
-                
+              <div className="absolute left-11 top-1/2 -translate-y-1/2 overflow-hidden h-5 pointer-events-none">
+
                 <div
-                  className="transition-transform duration-700 ease-[cubic-bezier(0.4,0,0.2,1)]"
+                  className="transition-transform duration-700"
                   style={{
-                    transform: `translateY(-${index * 20}px)`
+                    transform: `translateY(-${placeholderIndex * 20}px)`,
                   }}
                 >
-                  {placeholders.map((text, i) => (
-                    <div key={i} className="h-5 text-gray-400 text-sm">
-                      {text}
+                  {placeholders.map((item, index) => (
+                    <div
+                      key={index}
+                      className="h-5 text-sm text-gray-400"
+                    >
+                      {item}
                     </div>
                   ))}
                 </div>
@@ -166,99 +199,156 @@ const Header = ({ products = [] }) => {
               </div>
             )}
 
-            {/* DROPDOWN */}
+            {/* SEARCH RESULTS */}
             {search && (
-              <div className="absolute top-12 w-full bg-white dark:bg-gray-800 border rounded-xl shadow-lg z-50 max-h-72 overflow-auto">
+              <div className="absolute top-12 left-0 right-0 bg-white dark:bg-gray-800 border dark:border-gray-700 rounded-xl shadow-xl max-h-80 overflow-y-auto z-50">
+
                 {filteredProducts.length > 0 ? (
-                  filteredProducts.slice(0, 6).map((product) => (
+                  filteredProducts.slice(0, 8).map((product) => (
                     <div
                       key={product._id}
-                      onClick={() => handleSelectProduct(product._id)}
+                      onClick={() =>
+                        handleSelectProduct(product._id)
+                      }
                       className="flex items-center gap-3 p-3 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
                     >
                       <img
                         src={product.image}
-                        className="w-10 h-10 object-contain"
                         alt=""
+                        className="w-12 h-12 object-contain"
                       />
+
                       <div>
-                        <p className="text-sm font-medium">
+                        <p className="text-sm font-medium text-gray-800 dark:text-white">
                           {product.name}
                         </p>
-                        <p className="text-xs text-gray-500">
+
+                        <p className="text-xs text-green-600 font-semibold">
                           ₹{product.price}
                         </p>
                       </div>
                     </div>
                   ))
                 ) : (
-                  <p className="p-3 text-sm text-gray-500">
-                    No results found
+                  <p className="p-4 text-sm text-gray-500">
+                    No products found
                   </p>
                 )}
               </div>
             )}
           </div>
 
-          {/* RIGHT */}
-          <div className="flex items-center gap-2 sm:gap-3 ml-auto">
+          {/* RIGHT SIDE */}
+          <div className="flex items-center gap-2 ml-auto">
+{user ? (
+  <>
+    <div className="flex items-center gap-2 sm:gap-3">
 
-            {user ? (
-              <>
-  <div className="flex items-center gap-2 sm:gap-3">
+      {/* USER GREETING */}
+      <div
+        className="
+        hidden md:flex
+        items-center gap-2
+        px-4 py-2
+        rounded-full
+        bg-gradient-to-r
+        from-green-500
+        to-green-600
+        text-white
+        shadow-md
+        whitespace-nowrap
+        "
+      >
+        <span className="text-base">👋</span>
 
-    {/* USER BADGE */}
-    <div className="hidden lg:flex items-center gap-2 px-3 py-1.5 
-    bg-gray-100 dark:bg-gray-800 rounded-full">
-
-      {/* Avatar */}
-      <div className="w-7 h-7 flex items-center justify-center 
-      rounded-full bg-green-600 text-white text-xs font-bold">
-        {user.username?.charAt(0).toUpperCase()}
+        <span className="font-medium text-sm">
+          Hi, {user.username}
+        </span>
       </div>
 
-      {/* Name */}
-      <span className="text-sm font-medium text-gray-700 dark:text-gray-200">
-        {user.username}
-      </span>
+      {/* LOGOUT BUTTON */}
+      <button
+        onClick={handleLogout}
+        className="
+        flex items-center gap-1 sm:gap-2
+        px-3 py-1.5 sm:px-4 sm:py-2
+        text-xs sm:text-sm
+        font-medium
+        text-white
+        rounded-full
+        bg-red-500
+        hover:bg-red-600
+        transition-all duration-300
+        "
+      >
+        <span>🚪</span>
+        <span className="hidden sm:block">
+          Logout
+        </span>
+      </button>
+
     </div>
-
-    {/* LOGOUT BUTTON */}
-    <button
-      onClick={handleLogout}
-      className="flex items-center gap-1 sm:gap-2 
-      px-3 py-1.5 sm:px-4 sm:py-2 
-      text-xs sm:text-sm font-medium
-      text-gray-700 dark:text-gray-200
-      border border-gray-300 dark:border-gray-600
-      rounded-full
-      bg-red-500 hover:text-white hover:bg-red-700
-      transition-all duration-300"
-    >
-      <span>🚪</span>
-      <span className="hidden sm:block">Logout</span>
-    </button>
-
-  </div>
-</>
-            ) : (
-              <button
-                onClick={() => navigate("/login")}
-                className="bg-blue-600 text-white px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm hover:bg-blue-700 transition"
-              >
-                Login
-              </button>
-            )}
+  </>
+) : (
+  <button
+    onClick={() => navigate("/login")}
+    className="
+    bg-blue-600
+    text-white
+    px-3 sm:px-4
+    py-1.5 sm:py-2
+    rounded-lg
+    text-xs sm:text-sm
+    hover:bg-blue-700
+    transition
+    "
+  >
+    Login
+  </button>
+)}
 
             {/* CART */}
             <button
               onClick={() => setIsCartOpen(true)}
-              className="relative bg-green-600 text-white px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl flex items-center gap-1 sm:gap-2 hover:bg-green-700 transition"
+              className="
+              relative
+              flex
+              items-center
+              gap-2
+              bg-green-600
+              hover:bg-green-700
+              text-white
+              px-4
+              py-2
+              rounded-xl
+              transition
+              shadow
+              "
             >
-              🛒 <span className="hidden sm:block">Cart</span>
+              🛒
+
+              <span className="hidden sm:block">
+                Cart
+              </span>
 
               {itemCount > 0 && (
-                <span className="absolute -top-2 -right-2 bg-red-500 text-white text-[10px] px-1.5 py-0.5 rounded-full font-bold">
+                <span
+                  className="
+                  absolute
+                  -top-2
+                  -right-2
+                  bg-red-500
+                  text-white
+                  min-w-[20px]
+                  h-[20px]
+                  flex
+                  items-center
+                  justify-center
+                  rounded-full
+                  text-[10px]
+                  font-bold
+                  "
+                >
                   {itemCount}
                 </span>
               )}
@@ -267,12 +357,32 @@ const Header = ({ products = [] }) => {
             {/* DARK MODE */}
             <button
               onClick={toggleDarkMode}
-              className="w-10 sm:w-12 h-5 sm:h-6 bg-gray-300 dark:bg-gray-700 rounded-full relative transition"
+              className="
+              relative
+              w-12
+              h-6
+              rounded-full
+              bg-gray-300
+              dark:bg-green-600
+              transition-all
+              "
             >
               <div
-                className={`absolute top-0.5 sm:top-1 w-4 h-4 bg-white rounded-full transition-all duration-300 ${
-                  darkMode ? "right-1" : "left-1"
-                }`}
+                className={`
+                absolute
+                top-0.5
+                w-5
+                h-5
+                bg-white
+                rounded-full
+                shadow
+                transition-all
+                ${
+                  darkMode
+                    ? "translate-x-6"
+                    : "translate-x-0.5"
+                }
+                `}
               />
             </button>
 

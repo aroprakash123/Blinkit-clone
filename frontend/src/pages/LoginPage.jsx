@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link ,useNavigate } from 'react-router-dom';
 import { login } from '../services/auth';
 import { useAuth } from '../context/AuthContext';
+import api from '../services/api';
 
 const LoginPage = () => {
   const [username, setUsername] = useState('');
@@ -11,54 +12,56 @@ const LoginPage = () => {
   const navigate = useNavigate();
   const { setUserData } = useAuth();
 
- const handleSubmit = async (e) => {
+const handleSubmit = async (e) => {
   e.preventDefault();
+
   setError('');
-  
-  if (username.length < 3) {
+
+  if (username.trim().length < 3) {
     setError('Username must be at least 3 characters');
     return;
   }
+
   if (password.length < 6) {
     setError('Password must be at least 6 characters');
     return;
   }
 
   try {
-    const response = await fetch('http://localhost:5000/api/auth/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ username, password })
+    console.log('LOGIN CLICKED');
+
+    const response = await api.post('/auth/login', {
+      username: username.trim(),
+      password,
     });
-    
-    const data = await response.json();
-    
-    if (response.ok) {
-      // Save to localStorage
+
+    const data = response.data;
+
+    console.log('LOGIN RESPONSE:', data);
+
+    if (data.token) {
+      const userData = {
+        _id: data._id,
+        username: data.username,
+        email: data.email,
+      };
+
       localStorage.setItem('token', data.token);
-      localStorage.setItem('user', JSON.stringify({
-        _id: data._id,
-        username: data.username,
-        email: data.email
-      }));
-      
-      // Update auth context
-      setUserData({
-        _id: data._id,
-        username: data.username,
-        email: data.email
-      });
-      
-      console.log('Login successful, user saved:', data.username);
-      
-      // Redirect to home
+      localStorage.setItem('user', JSON.stringify(userData));
+
+      setUserData(userData);
+
       navigate('/');
     } else {
-      setError(data.message || 'Invalid credentials');
+      setError('Invalid credentials');
     }
   } catch (err) {
     console.error('Login error:', err);
-    setError('Network error. Please try again.');
+
+    setError(
+      err.response?.data?.message ||
+      'Login failed. Please try again.'
+    );
   }
 };
   return (
@@ -134,12 +137,15 @@ const LoginPage = () => {
             </button>
           </form>
 
-          <p className="mt-4 text-center text-gray-600">
-            Don't have an account?{' '}
-            <a href="/register" className="text-blue-600 hover:underline font-medium">
-              Register
-            </a>
-          </p>
+        <p className="mt-4 text-center text-gray-600">
+  Don't have an account?{' '}
+  <Link
+    to="/register"
+    className="text-blue-600 hover:underline font-medium"
+  >
+    Register
+  </Link>
+</p>
         </div>
       </div>
     </div>

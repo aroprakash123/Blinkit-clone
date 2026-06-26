@@ -46,7 +46,14 @@ const RegisterPage = () => {
         email: formData.email,
         password: formData.password
       });
-      setUserData(userData);
+    setUserData(userData.user || userData);
+
+localStorage.setItem('token', userData.token);
+
+localStorage.setItem(
+  'user',
+  JSON.stringify(userData.user || userData)
+);
       navigate('/');
     } catch (err) {
       setError(err.response?.data?.message || 'Registration failed');
