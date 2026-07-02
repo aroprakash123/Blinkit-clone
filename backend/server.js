@@ -15,10 +15,13 @@ const app = express();
 const corsOptions = {
   origin: [
     "http://localhost:5173",
-    "https://blinkit-ui-5w8y.onrender.com"
+    "https://aro-ecommerce.netlify.app"
   ],
-  credentials: true
+  credentials: true,
 };
+
+app.use(cors(corsOptions));
+app.options(/.*/, cors(corsOptions));
 
 app.use(cors(corsOptions));
 app.options(/.*/, cors(corsOptions));
